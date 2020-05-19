@@ -35,7 +35,7 @@ export async function createShortUrl(url: string) {
 
 export async function resolveShortUrl(shortUrlId: string): Promise<string> {
     let shortUrl: ShortUrl = await shortUrlAccess.getShortUrl(shortUrlId)
-    return shortUrl.longUrl
+    return shortUrl ? shortUrl.longUrl : null
 }
 
 function extractPageTitle(bodyString: string): string {
