@@ -1,7 +1,6 @@
 service: custom-serverless-url-shortener
 
 plugins:
-  - serverless-dynamodb-local
   - serverless-offline
   - serverless-plugin-typescript
 
