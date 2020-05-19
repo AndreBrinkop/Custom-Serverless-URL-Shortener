@@ -1,6 +1,7 @@
-import {ShortUrl} from "../models/ShortUrl";
+import {ShortUrlItem} from "../models/ShortUrlItem";
+import {ShortUrlResponse} from "../models/ShortUrlResponse";
 
-const axios = require('axios');
+const superagent = require('superagent');
 const cheerio = require('cheerio');
 const base62 = require("base62/lib/ascii");
 
@@ -10,31 +11,44 @@ import {ShortUrlAccess} from "../dataLayer/ShortUrlAccess";
 const logger = createLogger('shortUrls')
 const shortUrlAccess = new ShortUrlAccess()
 
-export async function createShortUrl(url: string) {
-    logger.info('Create Short Url', {"url": url})
+export async function createShortUrl(url: string, callingUrl: string) {
+    logger.info('Create Short Url', {"url": url, "callingUrl": callingUrl})
 
     let bodyString: string
     try {
-        const response = await axios.get(url)
-        bodyString = response.data
+        const response = await superagent.get(url).timeout({
+            response: 2500,
+            deadline: 3000
+        })
+        logger.info('Fetched URL content')
+        bodyString = response.text
     } catch (e) {
-        throw new Error('Website for provided URL can not be accessed.')
+        logger.info('Website for provided URL can not be accessed', {'error': e})
     }
     let title = extractPageTitle(bodyString);
 
     const shortUrlSeed = await shortUrlAccess.createUniqueShortUrlSeed()
     const shortUrlId = generateShortUrlId(shortUrlSeed)
 
-    return await shortUrlAccess.createShortUrl({
+    const shortUrlItem = await shortUrlAccess.createShortUrl({
         urlId: shortUrlId,
         longUrl: url,
         title: title,
         createdAt: new Date().toISOString()
     })
+
+    const shortUrlResponse: ShortUrlResponse = {
+        shortUrl: callingUrl + '/' + shortUrlItem.urlId,
+        longUrl: shortUrlItem.longUrl,
+        title: shortUrlItem.title,
+        createdAt: shortUrlItem.createdAt
+    }
+
+    return shortUrlResponse
 }
 
 export async function resolveShortUrl(shortUrlId: string): Promise<string> {
-    let shortUrl: ShortUrl = await shortUrlAccess.getShortUrl(shortUrlId)
+    let shortUrl: ShortUrlItem = await shortUrlAccess.getShortUrl(shortUrlId)
     return shortUrl ? shortUrl.longUrl : null
 }
 
