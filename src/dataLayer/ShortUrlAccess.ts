@@ -1,3 +1,5 @@
+import {ShortUrl} from "../models/ShortUrl";
+
 const AWS = require('aws-sdk');
 import {DocumentClient} from 'aws-sdk/clients/dynamodb'
 import {createLogger} from "../utils/logger";
@@ -7,13 +9,13 @@ const logger = createLogger('ShortUrlAccess')
 export class ShortUrlAccess {
 
     constructor(
-        private readonly docClient: DocumentClient = AWS.DynamoDB.DocumentClient(),
-        private readonly shortUrlTable = process.env.SHORT_URL_TABLE,
-        private readonly configTable: string = process.env.CONFIG_TABLE){
+        private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
+        private readonly shortUrlTable = process.env.SHORT_URL_TABLE as string,
+        private readonly configTable = process.env.CONFIG_TABLE as string) {
     }
 
-    async createUrlId(): Promise<number> {
-        logger.info('Creating URL id');
+    async createUniqueShortUrlSeed(): Promise<string> {
+        logger.info('Creating short URL seed');
 
         const response = await this.docClient.update({
             TableName: this.configTable,
@@ -29,9 +31,25 @@ export class ShortUrlAccess {
             ReturnValues: "UPDATED_NEW"
         }).promise();
 
-        const urlId = response.Attributes['configValue']
-        logger.info('Created URL id',{"urlId": urlId});
-        return urlId
+        let seed
+        try {
+            seed = response.Attributes['configValue']
+        } catch {
+            throw new Error('Could not retrieve short URL seed')
+        }
+        logger.info('Created short URL seed',{"seed": seed});
+        return seed.toString()
+    }
+
+    async createShortUrl(shortUrl: ShortUrl) {
+        logger.info("Create Short URL", {"shortUrl": shortUrl});
+
+        await this.docClient.put({
+            TableName: this.shortUrlTable,
+            Item: shortUrl
+        }).promise();
+
+        return shortUrl
     }
 
 }
