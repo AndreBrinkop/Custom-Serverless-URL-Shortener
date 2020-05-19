@@ -17,11 +17,11 @@ provider:
 
 functions:
   hello:
-    handler: src/lambda/http/handler.hello
+    handler: src/lambda/http/urlRedirect.handler
     events:
       - http:
           method: get
-          path: /
+          path: /{urlId}
 
 # you can add CloudFormation resource templates here
 #resources:
