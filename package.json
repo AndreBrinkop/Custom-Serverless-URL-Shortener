@@ -1,0 +1,18 @@
+{
+  "name": "custom-serverless-url-shortener",
+  "version": "1.0.0",
+  "description": "This application can be used to host a custom url shortener on your own domain using serverless and AWS",
+  "scripts": {
+    "deploy": "serverless deploy -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener.git"
+  },
+  "author": "André Brinkop",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener/issues"
+  },
+  "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme"
+}
