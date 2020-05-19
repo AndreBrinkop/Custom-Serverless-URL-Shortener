@@ -18,8 +18,8 @@ provider:
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
 
 functions:
-  urlRedirect:
-    handler: src/lambda/http/urlRedirect.handler
+  shortUrlRedirect:
+    handler: src/lambda/http/shortUrlRedirect.handler
     events:
       - http:
           method: get
