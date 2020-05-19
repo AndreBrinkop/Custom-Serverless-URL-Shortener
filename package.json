@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
     "aws-sdk": "^2.679.0",
+    "serverless-dynamodb-local": "^0.2.39",
     "serverless-offline": "^6.1.5",
     "serverless-plugin-typescript": "^1.1.9",
     "typescript": "^3.9.2"
