@@ -2,13 +2,13 @@ const AWS = require('aws-sdk');
 import {DocumentClient} from 'aws-sdk/clients/dynamodb'
 import {createLogger} from "../utils/logger";
 
-const logger = createLogger('UrlAccess')
+const logger = createLogger('ShortUrlAccess')
 
-export class UrlAccess {
+export class ShortUrlAccess {
 
     constructor(
         private readonly docClient: DocumentClient = AWS.DynamoDB.DocumentClient(),
-        private readonly urlTable = process.env.URL_TABLE,
+        private readonly shortUrlTable = process.env.SHORT_URL_TABLE,
         private readonly configTable: string = process.env.CONFIG_TABLE){
     }
 
@@ -20,6 +20,7 @@ export class UrlAccess {
             Key: {
                 'configKey': "NextId"
             },
+            // Retrieve and increment 'NextId' value or create if it does not exist
             UpdateExpression: 'SET configValue = if_not_exists(configValue, :zero) + :one',
             ExpressionAttributeValues: {
                 ':one': 1,

@@ -13,7 +13,7 @@ provider:
 
   environment:
     PROJECT_NAME: serverless-url-shortener
-    URL_TABLE: ${self:provider.environment.PROJECT_NAME}-url-table-${self:provider.stage}
+    SHORT_URL_TABLE: ${self:provider.environment.PROJECT_NAME}-short-url-table-${self:provider.stage}
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
 
 functions:
@@ -36,7 +36,7 @@ resources:
           - AttributeName: urlId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.URL_TABLE}
+        TableName: ${self:provider.environment.SHORT_URL_TABLE}
     ConfigTable:
       Type: AWS::DynamoDB::Table
       Properties:
