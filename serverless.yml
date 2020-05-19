@@ -29,6 +29,21 @@ functions:
         Action:
           - dynamodb:GetItem
         Resource: !GetAtt UrlTable.Arn
+  createShortUrl:
+    handler: src/lambda/http/createShortUrl.handler
+    events:
+      - http:
+          method: post
+          path: /
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: !GetAtt UrlTable.Arn
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: !GetAtt ConfigTable.Arn
 
 resources:
   Resources:
