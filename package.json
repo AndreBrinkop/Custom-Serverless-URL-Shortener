@@ -10,7 +10,6 @@
     "url": "git+https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener.git"
   },
   "author": "André Brinkop",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener/issues"
   },
