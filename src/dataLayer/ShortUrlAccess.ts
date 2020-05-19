@@ -1,4 +1,4 @@
-import {ShortUrl} from "../models/ShortUrl";
+import {ShortUrlItem} from "../models/ShortUrlItem";
 
 const AWS = require('aws-sdk');
 import {DocumentClient} from 'aws-sdk/clients/dynamodb'
@@ -41,7 +41,7 @@ export class ShortUrlAccess {
         return seed.toString()
     }
 
-    async createShortUrl(shortUrl: ShortUrl) {
+    async createShortUrl(shortUrl: ShortUrlItem) {
         logger.info("Create Short URL", {"shortUrl": shortUrl});
 
         await this.docClient.put({
@@ -63,7 +63,7 @@ export class ShortUrlAccess {
             })
             .promise()
 
-        return result.Item as ShortUrl
+        return result.Item as ShortUrlItem
     }
 
 }
