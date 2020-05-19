@@ -16,5 +16,8 @@
   "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme",
   "dependencies": {
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "serverless-offline": "^6.1.5"
   }
 }
