@@ -52,4 +52,18 @@ export class ShortUrlAccess {
         return shortUrl
     }
 
+    async getShortUrl(shortUrlId: string) {
+        logger.info("Get short URL", {"shortUrlId": shortUrlId})
+        const result = await this.docClient
+            .query({
+                TableName: this.shortUrlTable,
+                KeyConditionExpression: 'urlId = :shortUrlId',
+                ExpressionAttributeValues: {
+                    ':shortUrlId': shortUrlId
+                }
+            })
+            .promise()
+        return result.Items[0] as ShortUrl
+    }
+
 }

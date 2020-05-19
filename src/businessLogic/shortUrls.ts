@@ -1,3 +1,5 @@
+import {ShortUrl} from "../models/ShortUrl";
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const base62 = require("base62/lib/ascii");
@@ -29,6 +31,11 @@ export async function createShortUrl(url: string) {
         title: title,
         createdAt: new Date().toISOString()
     })
+}
+
+export async function resolveShortUrl(shortUrlId: string): Promise<string> {
+    let shortUrl: ShortUrl = await shortUrlAccess.getShortUrl(shortUrlId)
+    return shortUrl.longUrl
 }
 
 function extractPageTitle(bodyString: string): string {
