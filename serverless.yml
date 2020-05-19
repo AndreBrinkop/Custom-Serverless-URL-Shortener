@@ -2,6 +2,7 @@ service: custom-serverless-url-shortener
 
 plugins:
   - serverless-offline
+  - serverless-plugin-typescript
 
 provider:
   name: aws
@@ -16,7 +17,11 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: src/lambda/http/handler.hello
+    events:
+      - http:
+          method: get
+          path: /
 
 # you can add CloudFormation resource templates here
 #resources:
