@@ -13,5 +13,8 @@
   "bugs": {
     "url": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener/issues"
   },
-  "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme"
+  "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme",
+  "dependencies": {
+    "winston": "^3.2.1"
+  }
 }
