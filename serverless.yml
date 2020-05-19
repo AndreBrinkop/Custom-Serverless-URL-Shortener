@@ -3,6 +3,7 @@ service: custom-serverless-url-shortener
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -23,6 +24,11 @@ functions:
       - http:
           method: get
           path: /{urlId}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+        Resource: !GetAtt UrlTable.Arn
 
 resources:
   Resources:
