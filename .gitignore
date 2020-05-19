@@ -38,3 +38,4 @@ venv/
 
 # Serverless directories
 .serverless/
+.build/
