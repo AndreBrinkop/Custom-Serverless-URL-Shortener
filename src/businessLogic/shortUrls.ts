@@ -67,6 +67,11 @@ export async function updateShortUrl(shortUrlId: string, updateShortUrlRequest: 
     await shortUrlAccess.updateShortUrl(shortUrlUpdate)
 }
 
+export async function deleteShortUrl(shortUrlId: string): Promise<void> {
+    logger.info('Delete Short URL', {"shortUrlId": shortUrlId})
+    await shortUrlAccess.deleteShortUrl(shortUrlId)
+}
+
 function extractPageTitle(bodyString: string): string {
     let title: string;
     try {

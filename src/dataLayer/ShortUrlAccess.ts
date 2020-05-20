@@ -92,4 +92,16 @@ export class ShortUrlAccess {
         }).promise();
     }
 
+    async deleteShortUrl(shortUrlId: string): Promise<void> {
+        logger.info("Delete Short URL", {"shortUrlId": shortUrlId});
+
+        await this.docClient
+            .delete({
+                TableName: this.shortUrlTable,
+                Key: {
+                    'urlId': shortUrlId,
+                }
+            }).promise();
+    }
+
 }
