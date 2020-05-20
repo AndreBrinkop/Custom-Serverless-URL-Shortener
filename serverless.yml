@@ -68,7 +68,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:UpdateItm
+          - dynamodb:UpdateItem
         Resource: !GetAtt UrlTable.Arn
 
   deleteShortUrl:
