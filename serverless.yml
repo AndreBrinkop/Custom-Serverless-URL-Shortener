@@ -107,3 +107,50 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CONFIG_TABLE}
+
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:provider.environment.PROJECT_NAME}-${self:provider.stage}-user-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:provider.environment.PROJECT_NAME}-${self:provider.stage}-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthFlows:
+          - code
+        AllowedOAuthScopes:
+          - email
+          - openid
+        GenerateSecret: false
+        CallbackURLs:
+          - http://localhost:3000
+        SupportedIdentityProviders:
+          - COGNITO
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: ${self:provider.environment.PROJECT_NAME}-${self:provider.stage}
+        UserPoolId: !Ref CognitoUserPool
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+
+    UserPoolDomain:
+      Value:
+        Ref: CognitoUserPoolDomain
