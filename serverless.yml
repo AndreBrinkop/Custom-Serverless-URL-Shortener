@@ -18,6 +18,7 @@ provider:
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
 
 functions:
+
   shortUrlRedirect:
     handler: src/lambda/http/shortUrlRedirect.handler
     events:
@@ -29,12 +30,13 @@ functions:
         Action:
           - dynamodb:GetItem
         Resource: !GetAtt UrlTable.Arn
+
   createShortUrl:
     handler: src/lambda/http/createShortUrl.handler
     events:
       - http:
           method: post
-          path: /
+          path: shortUrls
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -44,6 +46,30 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: !GetAtt ConfigTable.Arn
+
+  updateShortUrl:
+    handler: src/lambda/http/updateShortUrl.handler
+    events:
+      - http:
+          method: patch
+          path: shortUrls/{shortUrlId}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItm
+        Resource: !GetAtt UrlTable.Arn
+
+  deleteShortUrl:
+    handler: src/lambda/http/deleteShortUrl.handler
+    events:
+      - http:
+          method: delete
+          path: shortUrls/{shortUrlId}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: !GetAtt UrlTable.Arn
 
 resources:
   Resources:
