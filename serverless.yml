@@ -16,6 +16,7 @@ provider:
     PROJECT_NAME: serverless-url-shortener
     SHORT_URL_TABLE: ${self:provider.environment.PROJECT_NAME}-short-url-table-${self:provider.stage}
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
+    FRONTEND_URL: http://localhost:4200
 
 functions:
 
@@ -133,7 +134,7 @@ resources:
           - openid
         GenerateSecret: false
         CallbackURLs:
-          - http://localhost:3000
+          - ${self:provider.environment.FRONTEND_URL}
         SupportedIdentityProviders:
           - COGNITO
     CognitoUserPoolDomain:
@@ -151,6 +152,11 @@ resources:
       Value:
         Ref: CognitoUserPoolClient
 
-    UserPoolDomain:
-      Value:
-        Ref: CognitoUserPoolDomain
+    UserPoolDomainEndpoint:
+      Value: !Join
+        - ''
+        - - 'https://'
+          - !Ref CognitoUserPoolDomain
+          - '.auth.'
+          - ${self:provider.region}
+          - '.amazoncognito.com'
