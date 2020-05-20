@@ -1,12 +1,13 @@
+import {createLogger} from "../utils/logger";
+import {ShortUrlAccess} from "../dataLayer/ShortUrlAccess";
+import {UpdateShortUrlRequest} from "../models/requests/UpdateShortUrlRequest";
 import {ShortUrlItem} from "../models/ShortUrlItem";
 import {ShortUrlResponse} from "../models/ShortUrlResponse";
+import {ShortUrlUpdate} from "../models/ShortUrlUpdate";
 
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 const base62 = require("base62/lib/ascii");
-
-import {createLogger} from "../utils/logger";
-import {ShortUrlAccess} from "../dataLayer/ShortUrlAccess";
 
 const logger = createLogger('shortUrls')
 const shortUrlAccess = new ShortUrlAccess()
@@ -55,6 +56,15 @@ export async function createShortUrl(url: string, callingUrl: string) {
 export async function resolveShortUrl(shortUrlId: string): Promise<string> {
     let shortUrl: ShortUrlItem = await shortUrlAccess.getShortUrl(shortUrlId)
     return shortUrl ? shortUrl.longUrl : null
+}
+
+export async function updateShortUrl(shortUrlId: string, updateShortUrlRequest: UpdateShortUrlRequest): Promise<void> {
+    logger.info('Update Short URL', {"updateShortUrlRequest": updateShortUrlRequest})
+    const shortUrlUpdate: ShortUrlUpdate = {
+        shortUrlId,
+        ...updateShortUrlRequest
+    }
+    await shortUrlAccess.updateShortUrl(shortUrlUpdate)
 }
 
 function extractPageTitle(bodyString: string): string {

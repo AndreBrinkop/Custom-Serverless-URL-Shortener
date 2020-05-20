@@ -3,6 +3,7 @@ import {ShortUrlItem} from "../models/ShortUrlItem";
 const AWS = require('aws-sdk');
 import {DocumentClient} from 'aws-sdk/clients/dynamodb'
 import {createLogger} from "../utils/logger";
+import {ShortUrlUpdate} from "../models/ShortUrlUpdate";
 
 const logger = createLogger('ShortUrlAccess')
 
@@ -74,6 +75,21 @@ export class ShortUrlAccess {
             .promise()
 
         return result.Item as ShortUrlItem
+    }
+
+    async updateShortUrl(shortUrlUpdate: ShortUrlUpdate): Promise<void> {
+        logger.info('Update Short URL', {'shortUrlUpdate': shortUrlUpdate});
+
+        await this.docClient.update({
+            TableName: this.shortUrlTable,
+            Key: {
+                'urlId': shortUrlUpdate.shortUrlId
+            },
+            UpdateExpression: 'set title = :title',
+            ExpressionAttributeValues: {
+                ':title': shortUrlUpdate.title,
+            }
+        }).promise();
     }
 
 }
