@@ -11,6 +11,11 @@ import {ShortUrlAccess} from "../dataLayer/ShortUrlAccess";
 const logger = createLogger('shortUrls')
 const shortUrlAccess = new ShortUrlAccess()
 
+export async function getAllShortUrls(): Promise<ShortUrlItem[]> {
+    logger.info('Get all Todo Items')
+    return shortUrlAccess.getAllShortUrls()
+}
+
 export async function createShortUrl(url: string, callingUrl: string) {
     logger.info('Create Short Url', {"url": url, "callingUrl": callingUrl})
 

@@ -14,6 +14,16 @@ export class ShortUrlAccess {
         private readonly configTable = process.env.CONFIG_TABLE as string) {
     }
 
+    async getAllShortUrls(): Promise<ShortUrlItem[]> {
+        logger.info('Get all short URLs')
+        const result = await this.docClient
+            .scan({
+                TableName: this.shortUrlTable
+            })
+            .promise()
+        return result.Items as ShortUrlItem[]
+    }
+
     async createUniqueShortUrlSeed(): Promise<string> {
         logger.info('Creating short URL seed');
 

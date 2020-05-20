@@ -31,6 +31,18 @@ functions:
           - dynamodb:GetItem
         Resource: !GetAtt UrlTable.Arn
 
+  GetShortUrls:
+    handler: src/lambda/http/getShortUrls.handler
+    events:
+      - http:
+          method: get
+          path: shortUrls
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: !GetAtt UrlTable.Arn
+
   createShortUrl:
     handler: src/lambda/http/createShortUrl.handler
     events:
