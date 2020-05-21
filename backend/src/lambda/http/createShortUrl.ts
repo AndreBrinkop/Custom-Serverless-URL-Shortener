@@ -13,6 +13,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     } catch (e) {
         return {
             statusCode: 400,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
             body: 'Host header field is missing"'
         }
     }
@@ -23,6 +27,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     return {
         statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+            'Access-Control-Allow-Credentials': true
+        },
         body: JSON.stringify(shortUrl)
     }
 }

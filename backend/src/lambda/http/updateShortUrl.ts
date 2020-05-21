@@ -11,6 +11,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     if (!shortUrlId) {
         return {
             statusCode: 400,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
             body: 'Url id path patameter is missing'
         }
     }
@@ -22,6 +26,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
     return {
         statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+            'Access-Control-Allow-Credentials': true
+        },
         body: ''
     }
 }

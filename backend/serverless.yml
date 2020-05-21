@@ -16,6 +16,7 @@ provider:
     PROJECT_NAME: serverless-url-shortener
     SHORT_URL_TABLE: ${self:provider.environment.PROJECT_NAME}-short-url-table-${self:provider.stage}
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
+    # Used to setup security settings like CORS
     FRONTEND_URL: http://localhost:4200
 
 functions:
@@ -25,6 +26,7 @@ functions:
     events:
       - http:
           method: get
+          cors: true
           path: /{urlId}
     iamRoleStatements:
       - Effect: Allow
@@ -37,6 +39,7 @@ functions:
     events:
       - http:
           method: get
+          cors: true
           path: shortUrls
           authorizer:
             type: COGNITO_USER_POOLS
@@ -52,6 +55,7 @@ functions:
     events:
       - http:
           method: post
+          cors: true
           path: shortUrls
           authorizer:
             type: COGNITO_USER_POOLS
@@ -71,6 +75,7 @@ functions:
     events:
       - http:
           method: patch
+          cors: true
           path: shortUrls/{shortUrlId}
           authorizer:
             type: COGNITO_USER_POOLS
@@ -86,6 +91,7 @@ functions:
     events:
       - http:
           method: delete
+          cors: true
           path: shortUrls/{shortUrlId}
           authorizer:
             type: COGNITO_USER_POOLS
@@ -149,11 +155,13 @@ resources:
           - ${self:provider.environment.FRONTEND_URL}
         SupportedIdentityProviders:
           - COGNITO
+
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
         Domain: ${self:provider.environment.PROJECT_NAME}-${self:provider.stage}
         UserPoolId: !Ref CognitoUserPool
+
     ApiGatewayAuthorizer:
       DependsOn:
         - ApiGatewayRestApi
@@ -174,6 +182,14 @@ resources:
                 - Ref: AWS::AccountId
                 - ':userpool/'
                 - Ref: CognitoUserPool
+
+    AuthorizerApiGatewayResponseDefault4XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:provider.environment.FRONTEND_URL}'"
+        ResponseType: DEFAULT_4XX
+        RestApiId: !Ref ApiGatewayRestApi
 
   Outputs:
     UserPoolId:

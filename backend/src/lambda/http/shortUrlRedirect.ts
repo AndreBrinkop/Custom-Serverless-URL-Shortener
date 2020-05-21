@@ -13,6 +13,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         logger.error('Could not find short url for given id', {"error": e})
         return {
             statusCode: 500,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
             body: 'Could not retrieve url for given id'
         }
     }
@@ -21,6 +25,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         logger.warn('Could not find short url for given id')
         return {
             statusCode: 404,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
             body: 'Could not find url for given id'
         }
     }
@@ -29,7 +37,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return {
       statusCode: 301,
       headers: {
-          "Location": redirectLocation
+          "Location": redirectLocation,
+          'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+          'Access-Control-Allow-Credentials': true
       },
       body: ''
   }

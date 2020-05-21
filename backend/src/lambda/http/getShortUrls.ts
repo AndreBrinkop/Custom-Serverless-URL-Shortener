@@ -1,5 +1,4 @@
-
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda'
 import {createLogger} from "../../utils/logger";
 import {getAllShortUrls} from "../../businessLogic/shortUrls";
 
@@ -11,6 +10,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const items = await getAllShortUrls()
     return {
         statusCode: 200,
+        headers: {
+            'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+            'Access-Control-Allow-Credentials': true
+        },
         body: JSON.stringify({
             items
         })
