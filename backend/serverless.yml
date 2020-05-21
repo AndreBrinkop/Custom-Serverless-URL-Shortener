@@ -38,6 +38,9 @@ functions:
       - http:
           method: get
           path: shortUrls
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -50,6 +53,9 @@ functions:
       - http:
           method: post
           path: shortUrls
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -66,6 +72,9 @@ functions:
       - http:
           method: patch
           path: shortUrls/{shortUrlId}
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -78,6 +87,9 @@ functions:
       - http:
           method: delete
           path: shortUrls/{shortUrlId}
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref ApiGatewayAuthorizer
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -142,6 +154,26 @@ resources:
       Properties:
         Domain: ${self:provider.environment.PROJECT_NAME}-${self:provider.stage}
         UserPoolId: !Ref CognitoUserPool
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: 300
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        Name: Authorizer
+        ProviderARNs:
+          - Fn::Join:
+              - ''
+              - - 'arn:aws:cognito-idp:'
+                - ${self:provider.region}
+                - ':'
+                - Ref: AWS::AccountId
+                - ':userpool/'
+                - Ref: CognitoUserPool
 
   Outputs:
     UserPoolId:
