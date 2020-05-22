@@ -19,6 +19,8 @@ provider:
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
     # Used to setup security settings like CORS
     FRONTEND_URL: http://localhost:4200
+    # Used to remove resource name from calling url to determine host for short url
+    SHORT_URL_RESOURCE_NAME: 'shortUrls'
 
 functions:
 
