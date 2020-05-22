@@ -1,21 +1,33 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {environment} from '../environments/environment';
 
-import { AmplifyService }  from 'aws-amplify-angular';
-import { AmplifyUIAngularModule } from '@aws-amplify/ui-angular';
+import {AmplifyService} from 'aws-amplify-angular';
+import {AmplifyUIAngularModule} from '@aws-amplify/ui-angular';
 import Amplify from 'aws-amplify';
+import {ShortUrlService} from "./services/short-url.service";
 
 /* Configure Amplify resources */
-const cognitoConfig = {
-  "aws_cognito_region": environment.awsCognitoRegion,
-  "aws_user_pools_id": environment.awsUserPoolsId,
-  "aws_user_pools_web_client_id": environment.awsUserPoolsWebClientId
+const amplifyConfig = {
+  Auth: {
+    region: environment.awsCognitoRegion,
+    userPoolId: environment.awsUserPoolsId,
+    userPoolWebClientId: environment.awsUserPoolsWebClientId
+  },
+  API: {
+    endpoints: [
+      {
+        name: "ShortUrlApi",
+        endpoint: environment.shortUrlEndpoint
+      }
+    ]
+  }
 }
-Amplify.configure(cognitoConfig);
+
+Amplify.configure(amplifyConfig);
 
 @NgModule({
   declarations: [
@@ -27,8 +39,10 @@ Amplify.configure(cognitoConfig);
     AppRoutingModule
   ],
   providers: [
-    AmplifyService
+    AmplifyService,
+    ShortUrlService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
