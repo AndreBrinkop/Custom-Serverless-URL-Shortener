@@ -34,7 +34,7 @@ functions:
           - dynamodb:GetItem
         Resource: !GetAtt UrlTable.Arn
 
-  GetShortUrls:
+  getShortUrls:
     handler: src/lambda/http/getShortUrls.handler
     events:
       - http:
