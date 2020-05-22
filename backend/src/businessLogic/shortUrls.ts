@@ -4,6 +4,7 @@ import {UpdateShortUrlRequest} from "../models/requests/UpdateShortUrlRequest";
 import {ShortUrlItem} from "../models/ShortUrlItem";
 import {ShortUrlResponse} from "../models/ShortUrlResponse";
 import {ShortUrlUpdate} from "../models/ShortUrlUpdate";
+import {CreateShortUrlRequest} from "../models/requests/CreateShortUrlRequest";
 
 const superagent = require('superagent');
 const cheerio = require('cheerio');
@@ -17,9 +18,10 @@ export async function getAllShortUrls(): Promise<ShortUrlItem[]> {
     return shortUrlAccess.getAllShortUrls()
 }
 
-export async function createShortUrl(url: string, callingUrl: string) {
-    logger.info('Create Short Url', {"url": url, "callingUrl": callingUrl})
+export async function createShortUrl(createShortUrlRequest: CreateShortUrlRequest, callingUrl: string) {
+    logger.info('Create Short Url', {"createShortUrlRequest": createShortUrlRequest, "callingUrl": callingUrl})
 
+    const url = createShortUrlRequest.url
     let bodyString: string
     try {
         const response = await superagent.get(url).timeout({

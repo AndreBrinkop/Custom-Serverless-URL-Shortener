@@ -19,10 +19,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
-    const updatedShortUrl: UpdateShortUrlRequest = JSON.parse(event.body)
-    logger.info('Update Short URL', {"shortUrlId": shortUrlId, "updatedShortUrl": updatedShortUrl})
+    const updateShortUrlRequest: UpdateShortUrlRequest = JSON.parse(event.body)
+    logger.info('Update Short URL', {"shortUrlId": shortUrlId, "updatedShortUrl": updateShortUrlRequest})
 
-    await updateShortUrl(shortUrlId, updatedShortUrl)
+    await updateShortUrl(shortUrlId, updateShortUrlRequest)
 
     return {
         statusCode: 200,
