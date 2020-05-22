@@ -23,8 +23,8 @@ export class AppComponent implements OnInit {
         if (isDevMode()) {
           const user: CognitoUser = authState.user
           const userSession: CognitoUserSession = user.getSignInUserSession()
-          const accessToken: CognitoAccessToken = userSession.getAccessToken()
-          console.log('jwtToken:', accessToken.getJwtToken())
+          const idToken: CognitoAccessToken = userSession.getIdToken()
+          console.log('jwtToken:', idToken.getJwtToken())
         }
 
         const shortUrls = await this.shortUrl.getShortUrls()
