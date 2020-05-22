@@ -2,12 +2,10 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import {createLogger} from "../../utils/logger";
 import {createShortUrl} from "../../businessLogic/shortUrls";
 import {CreateShortUrlRequest} from "../../models/requests/CreateShortUrlRequest";
+import {getUserId} from "../utils";
 const logger = createLogger('urlRedirect')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body)
-    logger.info('Requested a new short url', {"createShortUrlRequest": createShortUrlRequest})
-
     if (!event.headers['Content-Type'] || 'application/json'.localeCompare(event.headers['Content-Type']) !== 0) {
         return {
             statusCode: 415,
@@ -18,6 +16,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
             body: 'Request has an invalid content type'
         }
     }
+
+    const userId = getUserId(event);
+    const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body)
+    logger.info('Requested a new short url', {"createShortUrlRequest": createShortUrlRequest, 'userId': userId})
 
     let host
     try {
@@ -35,7 +37,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const { path } = event.requestContext
     const callingUrl = "http://" + host + path
 
-    const shortUrl = await createShortUrl(createShortUrlRequest, callingUrl)
+    const shortUrl = await createShortUrl(createShortUrlRequest, callingUrl, userId)
 
     return {
         statusCode: 200,

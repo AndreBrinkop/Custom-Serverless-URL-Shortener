@@ -15,8 +15,8 @@ export class ShortUrlAccess {
         private readonly configTable = process.env.CONFIG_TABLE as string) {
     }
 
-    async getAllShortUrls(): Promise<ShortUrlItem[]> {
-        logger.info('Get all short URLs')
+    async getAllShortUrls(userId: string): Promise<ShortUrlItem[]> {
+        logger.info('Get all short URLs', {'userId': userId})
         const result = await this.docClient
             .scan({
                 TableName: this.shortUrlTable
@@ -77,8 +77,8 @@ export class ShortUrlAccess {
         return result.Item as ShortUrlItem
     }
 
-    async updateShortUrl(shortUrlUpdate: ShortUrlUpdate): Promise<void> {
-        logger.info('Update Short URL', {'shortUrlUpdate': shortUrlUpdate});
+    async updateShortUrl(shortUrlUpdate: ShortUrlUpdate, userId: string): Promise<void> {
+        logger.info('Update Short URL', {'shortUrlUpdate': shortUrlUpdate, 'userId': userId});
 
         await this.docClient.update({
             TableName: this.shortUrlTable,
@@ -92,8 +92,8 @@ export class ShortUrlAccess {
         }).promise();
     }
 
-    async deleteShortUrl(shortUrlId: string): Promise<void> {
-        logger.info("Delete Short URL", {"shortUrlId": shortUrlId});
+    async deleteShortUrl(shortUrlId: string, userId: string): Promise<void> {
+        logger.info("Delete Short URL", {"shortUrlId": shortUrlId, 'userId': userId});
 
         await this.docClient
             .delete({

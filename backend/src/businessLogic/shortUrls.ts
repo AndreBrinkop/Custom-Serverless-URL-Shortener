@@ -13,13 +13,13 @@ const base62 = require("base62/lib/ascii");
 const logger = createLogger('shortUrls')
 const shortUrlAccess = new ShortUrlAccess()
 
-export async function getAllShortUrls(): Promise<ShortUrlItem[]> {
-    logger.info('Get all Todo Items')
-    return shortUrlAccess.getAllShortUrls()
+export async function getAllShortUrls(userId: string): Promise<ShortUrlItem[]> {
+    logger.info('Get all Todo Items',{'userId': userId} )
+    return shortUrlAccess.getAllShortUrls(userId)
 }
 
-export async function createShortUrl(createShortUrlRequest: CreateShortUrlRequest, callingUrl: string) {
-    logger.info('Create Short Url', {"createShortUrlRequest": createShortUrlRequest, "callingUrl": callingUrl})
+export async function createShortUrl(createShortUrlRequest: CreateShortUrlRequest, callingUrl: string, userId: string) {
+    logger.info('Create Short Url', {'createShortUrlRequest': createShortUrlRequest, 'callingUrl': callingUrl, 'userId': userId})
 
     const url = createShortUrlRequest.url
     let bodyString: string
@@ -40,6 +40,7 @@ export async function createShortUrl(createShortUrlRequest: CreateShortUrlReques
 
     const shortUrlItem = await shortUrlAccess.createShortUrl({
         urlId: shortUrlId,
+        userId: userId,
         longUrl: url,
         title: title,
         createdAt: new Date().toISOString()
@@ -60,18 +61,18 @@ export async function resolveShortUrl(shortUrlId: string): Promise<string> {
     return shortUrl ? shortUrl.longUrl : null
 }
 
-export async function updateShortUrl(shortUrlId: string, updateShortUrlRequest: UpdateShortUrlRequest): Promise<void> {
-    logger.info('Update Short URL', {"updateShortUrlRequest": updateShortUrlRequest})
+export async function updateShortUrl(shortUrlId: string, updateShortUrlRequest: UpdateShortUrlRequest, userId: string): Promise<void> {
+    logger.info('Update Short URL', {"updateShortUrlRequest": updateShortUrlRequest, 'userId': userId})
     const shortUrlUpdate: ShortUrlUpdate = {
         shortUrlId,
         ...updateShortUrlRequest
     }
-    await shortUrlAccess.updateShortUrl(shortUrlUpdate)
+    await shortUrlAccess.updateShortUrl(shortUrlUpdate, userId)
 }
 
-export async function deleteShortUrl(shortUrlId: string): Promise<void> {
-    logger.info('Delete Short URL', {"shortUrlId": shortUrlId})
-    await shortUrlAccess.deleteShortUrl(shortUrlId)
+export async function deleteShortUrl(shortUrlId: string, userId: string): Promise<void> {
+    logger.info('Delete Short URL', {"shortUrlId": shortUrlId, 'userId': userId})
+    await shortUrlAccess.deleteShortUrl(shortUrlId, userId)
 }
 
 function extractPageTitle(bodyString: string): string {

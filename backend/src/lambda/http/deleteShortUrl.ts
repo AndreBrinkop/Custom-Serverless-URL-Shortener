@@ -1,11 +1,15 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import {createLogger} from "../../utils/logger";
 import {deleteShortUrl} from "../../businessLogic/shortUrls";
+import {getUserId} from "../utils";
 
 const logger = createLogger('deleteShortUrl')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    const userId = getUserId(event)
     const shortUrlId = event.pathParameters.shortUrlId
+    logger.info('Delete Short URL', {'userId': userId, 'shortUrlId': shortUrlId})
+
     if (!shortUrlId) {
         return {
             statusCode: 400,
@@ -17,9 +21,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
-    logger.info('Delete Short URL', {"shortUrlId": shortUrlId})
-
-    await deleteShortUrl(shortUrlId)
+    await deleteShortUrl(shortUrlId, userId)
 
     return {
         statusCode: 200,

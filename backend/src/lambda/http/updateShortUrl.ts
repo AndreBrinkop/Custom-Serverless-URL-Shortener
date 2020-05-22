@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { UpdateShortUrlRequest } from '../../models/requests/UpdateShortUrlRequest'
 import {createLogger} from "../../utils/logger";
 import {updateShortUrl} from "../../businessLogic/shortUrls";
+import {getUserId} from "../utils";
 
 const logger = createLogger('updateShortUrl')
 
@@ -18,7 +19,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
+    const userId = getUserId(event)
     const shortUrlId = event.pathParameters.shortUrlId
+    logger.info('Update Short URL', {'userId': userId, 'shortUrlId': shortUrlId})
+
     if (!shortUrlId) {
         return {
             statusCode: 400,
@@ -31,9 +35,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const updateShortUrlRequest: UpdateShortUrlRequest = JSON.parse(event.body)
-    logger.info('Update Short URL', {"shortUrlId": shortUrlId, "updatedShortUrl": updateShortUrlRequest})
-
-    await updateShortUrl(shortUrlId, updateShortUrlRequest)
+    await updateShortUrl(shortUrlId, updateShortUrlRequest, userId)
 
     return {
         statusCode: 200,
