@@ -22,12 +22,12 @@ provider:
 functions:
 
   shortUrlRedirect:
-    handler: src/lambda/http/shortUrlRedirect.handler
+    handler: src/lambda/http/redirectShortUrls.handler
     events:
       - http:
           method: get
           cors: true
-          path: /{urlId}
+          path: /{shortUrlId}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -57,6 +57,9 @@ functions:
           method: post
           cors: true
           path: shortUrls
+          request:
+            schema:
+              application/json: ${file(models/create-short-url-request.json)}
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !Ref ApiGatewayAuthorizer
@@ -77,6 +80,9 @@ functions:
           method: patch
           cors: true
           path: shortUrls/{shortUrlId}
+          request:
+            schema:
+              application/json: ${file(models/update-short-url-request.json)}
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId: !Ref ApiGatewayAuthorizer

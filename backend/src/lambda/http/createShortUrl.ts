@@ -8,6 +8,17 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body)
     logger.info('Requested a new short url', {"createShortUrlRequest": createShortUrlRequest})
 
+    if (!event.headers['Content-Type'] || 'application/json'.localeCompare(event.headers['Content-Type']) !== 0) {
+        return {
+            statusCode: 415,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Request has an invalid content type'
+        }
+    }
+
     let host
     try {
         host = event.headers['Host']

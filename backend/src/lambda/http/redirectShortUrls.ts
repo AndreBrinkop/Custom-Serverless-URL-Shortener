@@ -6,9 +6,9 @@ const logger = createLogger('urlRedirect')
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let redirectLocation
     try {
-        const urlId = event.pathParameters.urlId
-        logger.info('Redirect requested', {"urlId": urlId})
-        redirectLocation = await resolveShortUrl(urlId)
+        const shortUrlId = event.pathParameters.shortUrlId
+        logger.info('Redirect requested', {"shortUrlId": shortUrlId})
+        redirectLocation = await resolveShortUrl(shortUrlId)
     } catch (e) {
         logger.error('Could not find short url for given id', {"error": e})
         return {

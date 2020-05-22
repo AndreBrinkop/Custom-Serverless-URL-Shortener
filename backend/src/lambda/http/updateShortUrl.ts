@@ -7,6 +7,17 @@ import {updateShortUrl} from "../../businessLogic/shortUrls";
 const logger = createLogger('updateShortUrl')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    if (!event.headers['Content-Type'] || 'application/json'.localeCompare(event.headers['Content-Type']) !== 0) {
+        return {
+            statusCode: 415,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Request has an invalid content type'
+        }
+    }
+
     const shortUrlId = event.pathParameters.shortUrlId
     if (!shortUrlId) {
         return {
