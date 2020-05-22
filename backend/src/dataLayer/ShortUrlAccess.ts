@@ -12,14 +12,19 @@ export class ShortUrlAccess {
     constructor(
         private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
         private readonly shortUrlTable = process.env.SHORT_URL_TABLE as string,
+        private readonly shortUrlIdIndex = process.env.SHORT_URL_ID_INDEX as string,
         private readonly configTable = process.env.CONFIG_TABLE as string) {
     }
 
     async getAllShortUrls(userId: string): Promise<ShortUrlItem[]> {
         logger.info('Get all short URLs', {'userId': userId})
         const result = await this.docClient
-            .scan({
-                TableName: this.shortUrlTable
+            .query({
+                TableName: this.shortUrlTable,
+                KeyConditionExpression: 'userId = :userId',
+                ExpressionAttributeValues: {
+                    ':userId': userId
+                }
             })
             .promise()
         return result.Items as ShortUrlItem[]
@@ -66,15 +71,17 @@ export class ShortUrlAccess {
     async getShortUrl(shortUrlId: string) {
         logger.info("Get short URL", {"shortUrlId": shortUrlId})
         const result = await this.docClient
-            .get({
+            .query({
                 TableName: this.shortUrlTable,
-                Key: {
-                    'urlId' :shortUrlId
+                IndexName: this.shortUrlIdIndex,
+                KeyConditionExpression: 'urlId = :shortUrlId',
+                ExpressionAttributeValues: {
+                    ':shortUrlId': shortUrlId
                 }
             })
             .promise()
-
-        return result.Item as ShortUrlItem
+        console.log('HERE', result.Items[0])
+        return result.Items[0] as ShortUrlItem
     }
 
     async updateShortUrl(shortUrlUpdate: ShortUrlUpdate, userId: string): Promise<void> {
@@ -83,6 +90,7 @@ export class ShortUrlAccess {
         await this.docClient.update({
             TableName: this.shortUrlTable,
             Key: {
+                'userId': userId,
                 'urlId': shortUrlUpdate.shortUrlId
             },
             UpdateExpression: 'set title = :title',
@@ -99,7 +107,8 @@ export class ShortUrlAccess {
             .delete({
                 TableName: this.shortUrlTable,
                 Key: {
-                    'urlId': shortUrlId,
+                    'userId': userId,
+                    'urlId': shortUrlId
                 }
             }).promise();
     }

@@ -15,6 +15,7 @@ provider:
   environment:
     PROJECT_NAME: serverless-url-shortener
     SHORT_URL_TABLE: ${self:provider.environment.PROJECT_NAME}-short-url-table-${self:provider.stage}
+    SHORT_URL_ID_INDEX: UrlIdIndex
     CONFIG_TABLE: ${self:provider.environment.PROJECT_NAME}-config-table-${self:provider.stage}
     # Used to setup security settings like CORS
     FRONTEND_URL: http://localhost:4200
@@ -31,8 +32,12 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:GetItem
-        Resource: !GetAtt UrlTable.Arn
+          - dynamodb:Query
+        Resource: !Join
+          - ''
+          - - !GetAtt UrlTable.Arn
+            - '/index/'
+            - ${self:provider.environment.SHORT_URL_ID_INDEX}
 
   getShortUrls:
     handler: src/lambda/http/getShortUrls.handler
@@ -47,7 +52,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:Scan
+          - dynamodb:Query
         Resource: !GetAtt UrlTable.Arn
 
   createShortUrl:
@@ -114,13 +119,26 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
           - AttributeName: urlId
             AttributeType: S
         KeySchema:
-          - AttributeName: urlId
+          - AttributeName: userId
             KeyType: HASH
+          - AttributeName: urlId
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.SHORT_URL_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.SHORT_URL_ID_INDEX}
+            KeySchema:
+              - AttributeName: urlId
+                KeyType: HASH
+            Projection:
+              NonKeyAttributes:
+                - longUrl
+              ProjectionType: INCLUDE
     ConfigTable:
       Type: AWS::DynamoDB::Table
       Properties:
