@@ -94,6 +94,7 @@ export class ShortUrlAccess {
                 'urlId': shortUrlUpdate.shortUrlId
             },
             UpdateExpression: 'set title = :title',
+            ConditionExpression: 'attribute_exists(urlId)',
             ExpressionAttributeValues: {
                 ':title': shortUrlUpdate.title,
             }
@@ -109,7 +110,8 @@ export class ShortUrlAccess {
                 Key: {
                     'userId': userId,
                     'urlId': shortUrlId
-                }
+                },
+                ConditionExpression: 'attribute_exists(urlId)',
             }).promise();
     }
 

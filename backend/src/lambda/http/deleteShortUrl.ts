@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda'
 import {createLogger} from "../../utils/logger";
 import {deleteShortUrl} from "../../businessLogic/shortUrls";
 import {getUserId} from "../utils";
@@ -21,7 +21,18 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
-    await deleteShortUrl(shortUrlId, userId)
+    try {
+        await deleteShortUrl(shortUrlId, userId)
+    } catch {
+        return {
+            statusCode: 404,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Can not find url to delete'
+        }
+    }
 
     return {
         statusCode: 200,

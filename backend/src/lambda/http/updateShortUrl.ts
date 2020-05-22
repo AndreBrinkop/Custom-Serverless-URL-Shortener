@@ -1,6 +1,6 @@
-import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
+import {APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult} from 'aws-lambda'
 
-import { UpdateShortUrlRequest } from '../../models/requests/UpdateShortUrlRequest'
+import {UpdateShortUrlRequest} from '../../models/requests/UpdateShortUrlRequest'
 import {createLogger} from "../../utils/logger";
 import {updateShortUrl} from "../../businessLogic/shortUrls";
 import {getUserId} from "../utils";
@@ -35,7 +35,18 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const updateShortUrlRequest: UpdateShortUrlRequest = JSON.parse(event.body)
-    await updateShortUrl(shortUrlId, updateShortUrlRequest, userId)
+    try {
+        await updateShortUrl(shortUrlId, updateShortUrlRequest, userId)
+    } catch {
+        return {
+            statusCode: 404,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Can not find url to update'
+        }
+    }
 
     return {
         statusCode: 200,
