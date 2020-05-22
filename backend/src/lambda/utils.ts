@@ -26,6 +26,9 @@ export function getCallingHostUrl(event: APIGatewayProxyEvent): string {
     let { path } = event.requestContext
     const shortUrlResourcePath = '/' + process.env.SHORT_URL_RESOURCE_NAME
 
+    if (path.endsWith('/')) {
+        path = path.substring(0, path.length - 1)
+    }
     if (path.endsWith(shortUrlResourcePath)) {
         path = path.substring(0, path.length - shortUrlResourcePath.length)
     }
