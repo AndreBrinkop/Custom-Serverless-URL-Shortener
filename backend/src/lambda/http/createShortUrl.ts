@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import {createLogger} from "../../utils/logger";
 import {createShortUrl} from "../../businessLogic/shortUrls";
 import {CreateShortUrlRequest} from "../../models/requests/CreateShortUrlRequest";
-import {getUserId} from "../utils";
+import {getCallingHostUrl, getUserId} from "../utils";
 const logger = createLogger('urlRedirect')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -21,10 +21,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body)
     logger.info('Requested a new short url', {"createShortUrlRequest": createShortUrlRequest, 'userId': userId})
 
-    let host
-    try {
-        host = event.headers['Host']
-    } catch (e) {
+    const callingUrl = getCallingHostUrl(event)
+    if (!callingUrl) {
         return {
             statusCode: 400,
             headers: {
@@ -34,8 +32,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
             body: 'Host header field is missing"'
         }
     }
-    const { path } = event.requestContext
-    const callingUrl = "http://" + host + path
 
     const shortUrl = await createShortUrl(createShortUrlRequest, callingUrl, userId)
 

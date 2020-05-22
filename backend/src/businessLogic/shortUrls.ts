@@ -13,9 +13,10 @@ const base62 = require("base62/lib/ascii");
 const logger = createLogger('shortUrls')
 const shortUrlAccess = new ShortUrlAccess()
 
-export async function getAllShortUrls(userId: string): Promise<ShortUrlItem[]> {
+export async function getAllShortUrls(userId: string, callingUrl: string): Promise<ShortUrlResponse[]> {
     logger.info('Get all Todo Items',{'userId': userId} )
-    return shortUrlAccess.getAllShortUrls(userId)
+    const shortUrlItems = await shortUrlAccess.getAllShortUrls(userId)
+    return shortUrlItems.map(shortUrlItem => createShortUrlResponse(shortUrlItem, callingUrl))
 }
 
 export async function createShortUrl(createShortUrlRequest: CreateShortUrlRequest, callingUrl: string, userId: string) {
@@ -46,14 +47,7 @@ export async function createShortUrl(createShortUrlRequest: CreateShortUrlReques
         createdAt: new Date().toISOString()
     })
 
-    const shortUrlResponse: ShortUrlResponse = {
-        shortUrl: callingUrl + '/' + shortUrlItem.urlId,
-        longUrl: shortUrlItem.longUrl,
-        title: shortUrlItem.title,
-        createdAt: shortUrlItem.createdAt
-    }
-
-    return shortUrlResponse
+    return createShortUrlResponse(shortUrlItem, callingUrl)
 }
 
 export async function resolveShortUrl(shortUrlId: string): Promise<string> {
@@ -88,4 +82,14 @@ function extractPageTitle(bodyString: string): string {
 
 function generateShortUrlId(seed: string): string {
     return base62.encode(seed)
+}
+
+function createShortUrlResponse(shortUrlItem: ShortUrlItem, callingUrl: string): ShortUrlResponse {
+    return {
+        shortUrl: callingUrl + '/' + shortUrlItem.urlId,
+        urlId: shortUrlItem.urlId,
+        longUrl: shortUrlItem.longUrl,
+        title: shortUrlItem.title,
+        createdAt: shortUrlItem.createdAt
+    }
 }

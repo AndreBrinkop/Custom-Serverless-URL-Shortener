@@ -20,3 +20,12 @@ function parseUserId(jwtToken: string): string {
     const decodedJwt = decode(jwtToken) as JwtPayload
     return decodedJwt.sub
 }
+
+export function getCallingHostUrl(event: APIGatewayProxyEvent): string {
+    const host: string = event.headers['Host']
+    const { path } = event.requestContext
+    if (host != null && path != null) {
+        return "http://" + host + path
+    }
+    return undefined
+}
