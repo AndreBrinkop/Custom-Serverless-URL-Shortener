@@ -22,19 +22,21 @@ function parseUserId(jwtToken: string): string {
 }
 
 export function getCallingHostUrl(event: APIGatewayProxyEvent): string {
-    const host: string = event.headers['Host']
+    let { domainName } = event.requestContext
     let { path } = event.requestContext
     const shortUrlResourcePath = '/' + process.env.SHORT_URL_RESOURCE_NAME
 
+    path = path ? path : ''
     if (path.endsWith('/')) {
-        path = path.substring(0, path.length - 1)
+        path = path.substring(0, Math.max(0, path.length - 1))
     }
     if (path.endsWith(shortUrlResourcePath)) {
-        path = path.substring(0, path.length - shortUrlResourcePath.length)
+        path = path.substring(0, Math.max(0, path.length - shortUrlResourcePath.length))
     }
 
-    if (host != null && path != null) {
-        return "http://" + host + (path ? path : '')
+    if (domainName.includes('offlineContext')) {
+        return 'http://localhost:3000' + path
     }
-    return undefined
+
+    return "https://" + domainName + (path ? path : '')
 }
