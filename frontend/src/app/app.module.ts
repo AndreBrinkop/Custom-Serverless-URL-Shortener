@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {MatTableModule} from '@angular/material/table';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -9,6 +10,7 @@ import {AmplifyService} from 'aws-amplify-angular';
 import {AmplifyUIAngularModule} from '@aws-amplify/ui-angular';
 import Amplify from 'aws-amplify';
 import {ShortUrlService} from "./services/short-url.service";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 /* Configure Amplify resources */
 const amplifyConfig = {
@@ -36,7 +38,9 @@ Amplify.configure(amplifyConfig);
   imports: [
     BrowserModule,
     AmplifyUIAngularModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatTableModule
   ],
   providers: [
     AmplifyService,
