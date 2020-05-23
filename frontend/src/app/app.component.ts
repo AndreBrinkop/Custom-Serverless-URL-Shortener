@@ -6,6 +6,7 @@ import {ShortUrl} from "../models/ShortUrl";
 import {AddShortUrlDialogComponent} from "./add-short-url-dialog/add-short-url-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
+import {EditShortUrlDialogComponent} from "./edit-short-url-dialog/edit-short-url-dialog.component";
 
 @Component({
   selector: 'app-root',
@@ -51,14 +52,34 @@ export class AppComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async result => {
-      const newShortUrl: ShortUrl = await this.shortUrl.createNewShortUrl(result)
-      this.dataSource.data.push(newShortUrl)
-      this.dataSource._updateChangeSubscription()
+      if (result) {
+        const newShortUrl: ShortUrl = await this.shortUrl.createNewShortUrl(result)
+        this.dataSource.data.push(newShortUrl)
+        this.dataSource._updateChangeSubscription()
+      }
+    });
+  }
+
+  openEditDialog(shortUrl: ShortUrl): void {
+    const dialogRef = this.dialog.open(EditShortUrlDialogComponent, {
+      width: '500px',
+      data: shortUrl
+    });
+
+    dialogRef.afterClosed().subscribe(async updatedShortUrl => {
+      if (updatedShortUrl) {
+        const success = await this.shortUrl.updateShortUrl(updatedShortUrl)
+        if (success) {
+          const index = this.dataSource.data.findIndex(s => s.urlId.localeCompare(updatedShortUrl.urlId) == 0)
+          this.dataSource.data[index] = updatedShortUrl
+          this.dataSource._updateChangeSubscription()
+        }
+      }
     });
   }
 
   editShortUrl(shortUrl: ShortUrl) {
-    console.log('edit', shortUrl)
+    this.openEditDialog(Object.assign({}, shortUrl))
   }
 
   async deleteShortUrl(shortUrl: ShortUrl) {

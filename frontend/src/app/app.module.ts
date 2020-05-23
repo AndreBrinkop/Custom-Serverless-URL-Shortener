@@ -16,6 +16,7 @@ import { AddShortUrlDialogComponent } from './add-short-url-dialog/add-short-url
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
+import {EditShortUrlDialogComponent} from './edit-short-url-dialog/edit-short-url-dialog.component';
 
 /* Configure Amplify resources */
 const amplifyConfig = {
@@ -39,7 +40,8 @@ Amplify.configure(amplifyConfig);
 @NgModule({
   declarations: [
     AppComponent,
-    AddShortUrlDialogComponent
+    AddShortUrlDialogComponent,
+    EditShortUrlDialogComponent
   ],
   imports: [
     BrowserModule,

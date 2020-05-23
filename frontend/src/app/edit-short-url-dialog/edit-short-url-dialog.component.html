@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Edit Short URL</h1>
+<div mat-dialog-content>
+  <p>What is the title of your url?</p>
+  <mat-form-field>
+    <mat-label>URL Title</mat-label>
+    <input matInput [(ngModel)]="shortUrl.title">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onAbortClick()">Abort</button>
+  <button mat-button color="primary" [disabled]="!shortUrl.title" [mat-dialog-close]="shortUrl" cdkFocusInitial>Save</button>
+</div>
