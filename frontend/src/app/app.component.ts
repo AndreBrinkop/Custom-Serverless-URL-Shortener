@@ -3,7 +3,9 @@ import {AmplifyService}  from 'aws-amplify-angular';
 import {CognitoUser, CognitoUserSession, CognitoAccessToken} from 'amazon-cognito-identity-js';
 import {ShortUrlService} from "./services/short-url.service";
 import {ShortUrl} from "../models/ShortUrl";
-import {MatTableModule} from '@angular/material/table';
+import {AddShortUrlDialogComponent} from "./add-short-url-dialog/add-short-url-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-root',
@@ -11,14 +13,15 @@ import {MatTableModule} from '@angular/material/table';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl'];
-  dataSource = [];
+  displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl']
+  dataSource: MatTableDataSource<ShortUrl> = new MatTableDataSource()
 
   public shortUrls: ShortUrl[]
 
   constructor(
     private amplify: AmplifyService,
-    private shortUrl: ShortUrlService
+    private shortUrl: ShortUrlService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -35,11 +38,23 @@ export class AppComponent implements OnInit {
         }
 
         this.shortUrls = await this.shortUrl.getShortUrls()
-        this.dataSource = this.shortUrls
+        this.dataSource.data = this.shortUrls
         console.log('Short URLs:', this.shortUrls)
       }
 
     })
+  }
+
+  openAddDialog(): void {
+    const dialogRef = this.dialog.open(AddShortUrlDialogComponent, {
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      const newShortUrl: ShortUrl = await this.shortUrl.createNewShortUrl(result)
+      this.dataSource.data.push(newShortUrl)
+      this.dataSource._updateChangeSubscription()
+    });
   }
 
 

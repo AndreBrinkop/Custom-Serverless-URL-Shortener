@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Create New Short URL</h1>
+<div mat-dialog-content>
+  <p>What is the URL you want to shorten?</p>
+  <mat-form-field>
+    <mat-label>Long URL</mat-label>
+    <input matInput [(ngModel)]="longUrl">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onAbortClick()">Abort</button>
+  <button mat-button color="primary" [disabled]="!longUrl" [mat-dialog-close]="longUrl" cdkFocusInitial>Create</button>
+</div>

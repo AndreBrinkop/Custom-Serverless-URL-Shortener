@@ -1,6 +1,9 @@
 <amplify-authenticator>
   <div>
+    <amplify-button (click)="openAddDialog()">Create New Short URl</amplify-button>
     <amplify-sign-out></amplify-sign-out>
+
+
 
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <!-- UrlId Column -->
