@@ -7,6 +7,7 @@ import {AddShortUrlDialogComponent} from "./add-short-url-dialog/add-short-url-d
 import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {EditShortUrlDialogComponent} from "./edit-short-url-dialog/edit-short-url-dialog.component";
+import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
   constructor(
     private amplify: AmplifyService,
     private shortUrl: ShortUrlService,
+    private spinner: NgxSpinnerService,
     public dialog: MatDialog
   ) {
   }
@@ -53,9 +55,11 @@ export class AppComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async result => {
       if (result) {
+        await this.spinner.show()
         const newShortUrl: ShortUrl = await this.shortUrl.createNewShortUrl(result)
         this.dataSource.data.push(newShortUrl)
         this.dataSource._updateChangeSubscription()
+        await this.spinner.hide()
       }
     });
   }
@@ -68,12 +72,14 @@ export class AppComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async updatedShortUrl => {
       if (updatedShortUrl) {
+        await this.spinner.show()
         const success = await this.shortUrl.updateShortUrl(updatedShortUrl)
         if (success) {
           const index = this.dataSource.data.findIndex(s => s.urlId.localeCompare(updatedShortUrl.urlId) == 0)
           this.dataSource.data[index] = updatedShortUrl
           this.dataSource._updateChangeSubscription()
         }
+        await this.spinner.hide()
       }
     });
   }
@@ -83,11 +89,13 @@ export class AppComponent implements OnInit {
   }
 
   async deleteShortUrl(shortUrl: ShortUrl) {
+    await this.spinner.show()
     const shortUrlId = shortUrl.urlId
     const success = await this.shortUrl.deleteShortUrl(shortUrlId)
     if (success) {
       this.dataSource.data = this.dataSource.data.filter(s => s.urlId.localeCompare(shortUrl.urlId) != 0)
     }
+    await this.spinner.hide()
   }
 
 }

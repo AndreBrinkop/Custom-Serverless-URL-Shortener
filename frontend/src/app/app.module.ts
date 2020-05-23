@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {MatTableModule} from '@angular/material/table';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from "@angular/material/form-field";
+import {NgxSpinnerModule} from "ngx-spinner";
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
@@ -53,7 +54,8 @@ Amplify.configure(amplifyConfig);
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    NgxSpinnerModule
   ],
   providers: [
     AmplifyService,
