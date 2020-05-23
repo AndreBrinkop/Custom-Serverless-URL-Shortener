@@ -4,6 +4,53 @@ The backend uses the Serverless framework to deploy the API on AWS and to create
 
 ## Backend
 The backend folder contains the Serverless Application that can be completely automatically deployed to AWS.
+The backend uses API Gateway and Lambda to provide the API, DynamoDB to provide the storage for the Short URLs and Cognito to provide authentication for the API.
+
+The provided API offers the following endpoints:
+The implemented app provides the following endpoints:
+
+```
+GET /{shortUrlId}
+
+Description:
+Redirects the caller to the original (long) URL
+```
+```
+GET /shortUrls
+
+Description:
+Returns a list of all short URLs created by the current user
+```
+```
+POST /shortUrls
+
+Description:
+Creates and returns a new short URL
+
+Body:
+{
+	"url": "<LONG_URL>"
+}
+```
+```
+PATCH /shortUrls/{shortUrlId}
+
+Description:
+Can be used to update the title of a stored short URL
+
+Body:
+{
+	"title": "<NEW_TITLE>"
+}
+```
+```
+DELETE /shortUrls/{shortUrlId}
+
+Description:
+Can be used to delete a stored short URL
+```
+
+**Note**: All endpoints to Create, Read, Update and Delete short URLs are protected and require the user to be logged in and to send a JWT authentication header with every request.
 
 ## Frontend
 The frontend folder contains an Angular App that can be used to connect and to interact with the backend API. It uses amplify to authenticate with the deployed Cognito User Pool and supports Listing, Creating, Modifiying and Deleting short urls.
