@@ -15,10 +15,12 @@
   },
   "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme",
   "dependencies": {
+    "aws-xray-sdk": "^3.0.1",
     "axios": "^0.19.2",
     "base62": "^2.0.1",
     "cheerio": "^1.0.0-rc.3",
     "jsonwebtoken": "^8.5.1",
+    "serverless-plugin-tracing": "^2.0.0",
     "superagent": "^5.2.2",
     "winston": "^3.2.1"
   },

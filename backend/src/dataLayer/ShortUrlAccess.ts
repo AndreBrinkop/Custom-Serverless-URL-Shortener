@@ -1,11 +1,13 @@
 import {ShortUrlItem} from "../models/ShortUrlItem";
 
-const AWS = require('aws-sdk');
+const AWSXRay = require('aws-xray-sdk');
 import {DocumentClient} from 'aws-sdk/clients/dynamodb'
 import {createLogger} from "../utils/logger";
 import {ShortUrlUpdate} from "../models/ShortUrlUpdate";
 
 const logger = createLogger('ShortUrlAccess')
+// Capture all created AWS clients
+const AWS = AWSXRay.captureAWS(require('aws-sdk'));
 
 export class ShortUrlAccess {
 
