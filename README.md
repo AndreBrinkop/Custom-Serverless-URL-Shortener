@@ -19,8 +19,8 @@ E.g. a valid configuration can look like this:
   shortUrlEndpoint: 'https://pp1d5gm4hl.execute-api.us-east-1.amazonaws.com/dev'
 ```
 
-After updating the configuration you need to install the necessary dependencies by running:
+After updating the configuration you need to install the necessary dependencies by running the following command from within the frontend folder:
 `npm install`
 
-After installing the dependencies you can run the frontend app locally on port 4200 by running:
+After installing the dependencies you can run the frontend app locally on port 4200 by running the following command while still being in the frontend folder:
 `npm run start`
