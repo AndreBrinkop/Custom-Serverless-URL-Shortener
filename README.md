@@ -2,6 +2,9 @@
 This application can be used to host a custom url shortener on your own domain using serverless and AWS.
 The backend uses the Serverless framework to deploy the API on AWS and to create the needed Infrastructure to add storage and authentication.
 
+## URL Shortener
+URL Shortener are offering a service to store long URLs and to make them accessible by a shorter alias URL. In this project the process to shorten URLs is to save original URLs to a Database using a unique auto incrementing ID and to make them accessible by using a BASE62 encoded version of this ID that the user can use to get redirected to the original URL. While everyone can use the redirection service to create/list/update/delete short URLs a user must be registered and authenticated. 
+
 ## Backend
 The backend folder contains the Serverless Application that can be completely automatically deployed to AWS.
 The backend uses API Gateway and Lambda to provide the API, DynamoDB to provide the storage for the Short URLs and Cognito to provide authentication for the API.
