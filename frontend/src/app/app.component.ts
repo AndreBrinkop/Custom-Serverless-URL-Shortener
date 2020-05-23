@@ -17,7 +17,7 @@ import {ToastrService} from "ngx-toastr";
 })
 export class AppComponent implements OnInit {
   displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl', 'action']
-  dataSource: MatTableDataSource<ShortUrl> = new MatTableDataSource()
+  dataSource: MatTableDataSource<ShortUrl>
 
   public shortUrls: ShortUrl[]
 
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
         }
 
         this.shortUrls = await this.shortUrl.getShortUrls()
-        this.dataSource.data = this.shortUrls
+        this.dataSource = new MatTableDataSource(this.shortUrls)
         console.log('Short URLs:', this.shortUrls)
       }
 
