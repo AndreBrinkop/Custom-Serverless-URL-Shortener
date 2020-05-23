@@ -27,7 +27,12 @@ export class ShortUrlService {
         url: longUrl
       }
     }
-    return (await API.post('ShortUrlApi', this.shortUrlsResource, requestInit))
+    try {
+      return (await API.post('ShortUrlApi', this.shortUrlsResource, requestInit))
+    } catch (e) {
+      console.log(e)
+      return undefined
+    }
   }
 
   public async updateShortUrl(updatedShortUrl: ShortUrl): Promise<Boolean> {
@@ -43,7 +48,8 @@ export class ShortUrlService {
     }
     try {
       await API.patch('ShortUrlApi', this.shortUrlsResource + '/' + updatedShortUrl.urlId, requestInit)
-    } catch {
+    } catch (e) {
+      console.log(e)
       return false
     }
     return true
@@ -53,7 +59,8 @@ export class ShortUrlService {
     const authInit = await this.createAuthHeader();
     try {
       await API.del('ShortUrlApi', this.shortUrlsResource + '/' + shortUrlId, authInit)
-    } catch {
+    } catch (e) {
+      console.log(e)
       return false
     }
     return true

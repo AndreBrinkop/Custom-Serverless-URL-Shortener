@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatTableDataSource} from "@angular/material/table";
 import {EditShortUrlDialogComponent} from "./edit-short-url-dialog/edit-short-url-dialog.component";
 import {NgxSpinnerService} from "ngx-spinner";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
     private amplify: AmplifyService,
     private shortUrl: ShortUrlService,
     private spinner: NgxSpinnerService,
+    private toastr: ToastrService,
     public dialog: MatDialog
   ) {
   }
@@ -57,8 +59,13 @@ export class AppComponent implements OnInit {
       if (result) {
         await this.spinner.show()
         const newShortUrl: ShortUrl = await this.shortUrl.createNewShortUrl(result)
-        this.dataSource.data.push(newShortUrl)
-        this.dataSource._updateChangeSubscription()
+        if (newShortUrl != undefined) {
+          this.dataSource.data.push(newShortUrl)
+          this.dataSource._updateChangeSubscription()
+          this.toastr.success('Successfully created Short URL!')
+        } else {
+          this.toastr.error('Could not create Short URL!')
+        }
         await this.spinner.hide()
       }
     });
@@ -78,13 +85,16 @@ export class AppComponent implements OnInit {
           const index = this.dataSource.data.findIndex(s => s.urlId.localeCompare(updatedShortUrl.urlId) == 0)
           this.dataSource.data[index] = updatedShortUrl
           this.dataSource._updateChangeSubscription()
+          this.toastr.success('Successfully updated Short URL!')
+        } else {
+          this.toastr.error('Could not update Short URL!')
         }
         await this.spinner.hide()
       }
     });
   }
 
-  editShortUrl(shortUrl: ShortUrl) {
+  public editShortUrl(shortUrl: ShortUrl) {
     this.openEditDialog(Object.assign({}, shortUrl))
   }
 
@@ -94,8 +104,12 @@ export class AppComponent implements OnInit {
     const success = await this.shortUrl.deleteShortUrl(shortUrlId)
     if (success) {
       this.dataSource.data = this.dataSource.data.filter(s => s.urlId.localeCompare(shortUrl.urlId) != 0)
+      this.toastr.success('Successfully deleted Short URL!')
+    } else {
+      this.toastr.error('Could not delete Short URL!')
     }
     await this.spinner.hide()
+
   }
 
 }

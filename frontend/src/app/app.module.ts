@@ -18,6 +18,7 @@ import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import {EditShortUrlDialogComponent} from './edit-short-url-dialog/edit-short-url-dialog.component';
+import {ToastrModule} from "ngx-toastr";
 
 /* Configure Amplify resources */
 const amplifyConfig = {
@@ -49,6 +50,7 @@ Amplify.configure(amplifyConfig);
     AmplifyUIAngularModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     MatTableModule,
     MatDialogModule,
     MatFormFieldModule,
