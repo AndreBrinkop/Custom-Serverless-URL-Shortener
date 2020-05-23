@@ -61,9 +61,12 @@ export class AppComponent implements OnInit {
     console.log('edit', shortUrl)
   }
 
-  deleteShortUrl(shortUrl: ShortUrl) {
-    console.log('delete', shortUrl)
+  async deleteShortUrl(shortUrl: ShortUrl) {
+    const shortUrlId = shortUrl.urlId
+    const success = await this.shortUrl.deleteShortUrl(shortUrlId)
+    if (success) {
+      this.dataSource.data = this.dataSource.data.filter(s => s.urlId.localeCompare(shortUrl.urlId) != 0)
+    }
   }
-
 
 }

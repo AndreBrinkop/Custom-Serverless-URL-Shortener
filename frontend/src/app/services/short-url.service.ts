@@ -30,6 +30,16 @@ export class ShortUrlService {
     return (await API.post('ShortUrlApi', this.shortUrlsResource, requestInit))
   }
 
+  public async deleteShortUrl(shortUrlId: string): Promise<Boolean> {
+    const authInit = await this.createAuthHeader();
+    try {
+      await API.del('ShortUrlApi', this.shortUrlsResource + '/' + shortUrlId, authInit)
+    } catch {
+      return false
+    }
+    return true
+  }
+
   private async createAuthHeader() {
     return {
       headers: {
