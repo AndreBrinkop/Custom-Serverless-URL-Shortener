@@ -8,7 +8,8 @@ import {getUserId} from "../utils";
 const logger = createLogger('updateShortUrl')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    if (!event.headers['Content-Type'] || 'application/json'.localeCompare(event.headers['Content-Type']) !== 0) {
+    const contentType = event.headers['Content-Type'] ?? event.headers['content-type']
+    if (!contentType || 'application/json'.localeCompare(contentType) !== 0) {
         return {
             statusCode: 415,
             headers: {
