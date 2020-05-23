@@ -1,4 +1,4 @@
-import {Component, OnInit, isDevMode} from '@angular/core';
+import {Component, isDevMode, ViewChild, OnInit, ChangeDetectorRef} from '@angular/core';
 import {AmplifyService}  from 'aws-amplify-angular';
 import {CognitoUser, CognitoUserSession, CognitoAccessToken} from 'amazon-cognito-identity-js';
 import {ShortUrlService} from "./services/short-url.service";
@@ -9,6 +9,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {EditShortUrlDialogComponent} from "./edit-short-url-dialog/edit-short-url-dialog.component";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ToastrService} from "ngx-toastr";
+import {MatTable} from "@angular/material/table";
 
 @Component({
   selector: 'app-root',
@@ -17,15 +18,15 @@ import {ToastrService} from "ngx-toastr";
 })
 export class AppComponent implements OnInit {
   displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl', 'action']
-  dataSource: MatTableDataSource<ShortUrl>
-
-  public shortUrls: ShortUrl[]
+  dataSource: MatTableDataSource<ShortUrl> = new MatTableDataSource()
+  @ViewChild(MatTable) matTable: MatTable<ShortUrl>
 
   constructor(
     private amplify: AmplifyService,
     private shortUrl: ShortUrlService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
     public dialog: MatDialog
   ) {
   }
@@ -42,9 +43,15 @@ export class AppComponent implements OnInit {
           console.log('jwtToken:', idToken.getJwtToken())
         }
 
-        this.shortUrls = await this.shortUrl.getShortUrls()
-        this.dataSource = new MatTableDataSource(this.shortUrls)
-        console.log('Short URLs:', this.shortUrls)
+        await this.spinner.show()
+        const shortUrls = await this.shortUrl.getShortUrls()
+        this.dataSource.data = shortUrls
+        this.matTable.renderRows()
+        await this.spinner.hide()
+        this.cdr.detectChanges()
+        console.log('Short URLs:', shortUrls, this.dataSource.data)
+      } else {
+        this.dataSource.data = []
       }
 
     })
