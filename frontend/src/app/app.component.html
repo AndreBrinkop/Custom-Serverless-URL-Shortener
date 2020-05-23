@@ -3,8 +3,6 @@
     <amplify-button (click)="openAddDialog()">Create New Short URl</amplify-button>
     <amplify-sign-out></amplify-sign-out>
 
-
-
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <!-- UrlId Column -->
       <ng-container matColumnDef="urlId">
@@ -28,6 +26,15 @@
       <ng-container matColumnDef="longUrl">
         <mat-header-cell *matHeaderCellDef> Long URL </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.longUrl}} </mat-cell>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <mat-header-cell mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+        <mat-cell mat-cell *matCellDef="let element">
+          <button mat-raised-button (click)="editShortUrl(element)">Edit</button>
+          <button mat-raised-button color="warn" (click)="deleteShortUrl(element)">Delete</button>
+        </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

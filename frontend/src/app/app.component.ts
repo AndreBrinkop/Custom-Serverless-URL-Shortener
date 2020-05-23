@@ -13,7 +13,7 @@ import {MatTableDataSource} from "@angular/material/table";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl']
+  displayedColumns: string[] = ['urlId', 'title', 'shortUrl', 'longUrl', 'action']
   dataSource: MatTableDataSource<ShortUrl> = new MatTableDataSource()
 
   public shortUrls: ShortUrl[]
@@ -55,6 +55,14 @@ export class AppComponent implements OnInit {
       this.dataSource.data.push(newShortUrl)
       this.dataSource._updateChangeSubscription()
     });
+  }
+
+  editShortUrl(shortUrl: ShortUrl) {
+    console.log('edit', shortUrl)
+  }
+
+  deleteShortUrl(shortUrl: ShortUrl) {
+    console.log('delete', shortUrl)
   }
 
 
