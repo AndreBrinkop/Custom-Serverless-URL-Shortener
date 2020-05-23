@@ -52,10 +52,22 @@ Can be used to delete a stored short URL
 
 **Note**: All endpoints to Create, Read, Update and Delete short URLs are protected and require the user to be logged in and to send a JWT authentication header with every request.
 
+### Deploying the Backend
+The serverless.yml file contains some environment variables that can be used to customize the backend prior to deployment.
+
+After updating the configuration you need to install the necessary dependencies by running the following command from within the backend folder:
+`npm install`
+
+If you do not have Serverless installed on your machine you need to install it as well:
+`npm install --g serverless`
+
+After installing the dependencies you can deploy the backend API on AWS (using your local AWS profile) by running the following command while still being in the backend folder:
+`serverless deploy -v`
+
 ## Frontend
 The frontend folder contains an Angular App that can be used to connect and to interact with the backend API. It uses amplify to authenticate with the deployed Cognito User Pool and supports Listing, Creating, Modifiying and Deleting short urls.
 
-### Running the Frontend
+### Locally running the Frontend
 Before running the frontend you need to configure it to talk to your deployed backend resources. You can do this by adding the necessary values to the apps environment file that you can find in: `frontend/src/environments`.
 
 E.g. a valid configuration can look like this:
