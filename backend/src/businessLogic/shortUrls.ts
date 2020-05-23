@@ -32,7 +32,7 @@ export async function createShortUrl(createShortUrlRequest: CreateShortUrlReques
         logger.info('Fetched URL content')
         bodyString = response.text
     } catch (e) {
-        logger.info('Website for provided URL can not be accessed', {'error': e})
+        throw new Error('Website for provided URL can not be accessed')
     }
     let title = extractPageTitle(bodyString);
 
@@ -74,14 +74,16 @@ export async function deleteShortUrl(shortUrlId: string, userId: string): Promis
 }
 
 function extractPageTitle(bodyString: string): string {
-    let title: string;
+    logger.info('Extract Page Title')
+    let title = 'No Title'
     try {
-        const body = cheerio.load(bodyString);
-        title = body('title').text();
-    } catch (e) {
-        title = 'No Title'
+        if (bodyString) {
+            const body = cheerio.load(bodyString);
+            title = body('title').text();
+        }
+    } finally {
+        return title;
     }
-    return title;
 }
 
 function generateShortUrlId(seed: string): string {

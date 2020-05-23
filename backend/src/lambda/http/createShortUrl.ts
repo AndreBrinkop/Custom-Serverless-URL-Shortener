@@ -34,7 +34,19 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         }
     }
 
-    const shortUrl = await createShortUrl(createShortUrlRequest, callingUrl, userId)
+    let shortUrl
+    try {
+        shortUrl = await createShortUrl(createShortUrlRequest, callingUrl, userId)
+    } catch (e) {
+        return {
+            statusCode: 400,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: e.message
+        }
+    }
 
     return {
         statusCode: 200,
