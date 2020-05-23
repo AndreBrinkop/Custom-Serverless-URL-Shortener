@@ -20,13 +20,17 @@
       <!-- Short URL Column -->
       <ng-container matColumnDef="shortUrl">
         <mat-header-cell *matHeaderCellDef> Short URL </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.shortUrl}} </mat-cell>
+        <mat-cell *matCellDef="let element">
+          <a href="{{element.shortUrl}}">{{element.shortUrl}}</a>
+        </mat-cell>
       </ng-container>
 
       <!-- Long URL Column -->
       <ng-container matColumnDef="longUrl">
         <mat-header-cell *matHeaderCellDef> Long URL </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.longUrl}} </mat-cell>
+        <mat-cell *matCellDef="let element">
+          <a href="{{element.longUrl}}">{{element.longUrl}}</a>
+        </mat-cell>
       </ng-container>
 
       <!-- Action Column -->
