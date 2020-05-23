@@ -10,7 +10,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 415,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Request has an invalid content type'
@@ -18,7 +18,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const userId = getUserId(event);
-    const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body)
+    const createShortUrlRequest: CreateShortUrlRequest = JSON.parse(event.body as string)
     logger.info('Requested a new short url', {"createShortUrlRequest": createShortUrlRequest, 'userId': userId})
 
     const callingUrl = getCallingHostUrl(event)
@@ -26,7 +26,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 400,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Host header field is missing"'
@@ -38,7 +38,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return {
         statusCode: 200,
         headers: {
-            'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+            'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
             'Access-Control-Allow-Credentials': true
         },
         body: JSON.stringify(shortUrl)

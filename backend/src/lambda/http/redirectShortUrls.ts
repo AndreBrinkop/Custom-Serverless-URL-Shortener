@@ -4,9 +4,20 @@ import {resolveShortUrl} from "../../businessLogic/shortUrls";
 const logger = createLogger('urlRedirect')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    if (!event.pathParameters || !event.pathParameters.shortUrlId) {
+        return {
+            statusCode: 400,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Url id path patameter is missing'
+        }
+    }
+    const shortUrlId = event.pathParameters.shortUrlId
+
     let redirectLocation
     try {
-        const shortUrlId = event.pathParameters.shortUrlId
         logger.info('Redirect requested', {"shortUrlId": shortUrlId})
         redirectLocation = await resolveShortUrl(shortUrlId)
     } catch (e) {
@@ -14,7 +25,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 500,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Could not retrieve url for given id'
@@ -26,7 +37,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 404,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Could not find url for given id'
@@ -38,7 +49,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       statusCode: 301,
       headers: {
           "Location": redirectLocation,
-          'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+          'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
           'Access-Control-Allow-Credentials': true
       },
       body: ''

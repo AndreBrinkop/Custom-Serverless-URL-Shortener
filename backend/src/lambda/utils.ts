@@ -23,6 +23,10 @@ function parseUserId(jwtToken: string): string {
 
 export function getCallingHostUrl(event: APIGatewayProxyEvent): string {
     let { domainName } = event.requestContext
+    if (!domainName) {
+        return ''
+    }
+
     let { path } = event.requestContext
     const shortUrlResourcePath = '/' + process.env.SHORT_URL_RESOURCE_NAME
 

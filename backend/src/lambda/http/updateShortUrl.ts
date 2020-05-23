@@ -12,7 +12,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 415,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Request has an invalid content type'
@@ -20,6 +20,18 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     }
 
     const userId = getUserId(event)
+
+    if (!event.pathParameters || !event.pathParameters.shortUrlId) {
+        return {
+            statusCode: 400,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
+                'Access-Control-Allow-Credentials': true
+            },
+            body: 'Url id path patameter is missing'
+        }
+    }
+
     const shortUrlId = event.pathParameters.shortUrlId
     logger.info('Update Short URL', {'userId': userId, 'shortUrlId': shortUrlId})
 
@@ -27,21 +39,21 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
         return {
             statusCode: 400,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Url id path patameter is missing'
         }
     }
 
-    const updateShortUrlRequest: UpdateShortUrlRequest = JSON.parse(event.body)
+    const updateShortUrlRequest: UpdateShortUrlRequest = JSON.parse(event.body as string)
     try {
         await updateShortUrl(shortUrlId, updateShortUrlRequest, userId)
     } catch {
         return {
             statusCode: 404,
             headers: {
-                'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+                'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
                 'Access-Control-Allow-Credentials': true
             },
             body: 'Can not find url to update'
@@ -51,7 +63,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     return {
         statusCode: 200,
         headers: {
-            'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
+            'Access-Control-Allow-Origin': process.env.FRONTEND_URL as string,
             'Access-Control-Allow-Credentials': true
         },
         body: ''

@@ -47,12 +47,10 @@ export class ShortUrlAccess {
             ReturnValues: "UPDATED_NEW"
         }).promise();
 
-        let seed
-        try {
-            seed = response.Attributes['configValue']
-        } catch {
+        if (!response.Attributes || !response.Attributes['configValue']) {
             throw new Error('Could not retrieve short URL seed')
         }
+        let seed = response.Attributes['configValue']
         logger.info('Created short URL seed',{"seed": seed});
         return seed.toString()
     }
@@ -80,7 +78,11 @@ export class ShortUrlAccess {
                 }
             })
             .promise()
-        console.log('HERE', result.Items[0])
+
+        if(!result.Items || result.Items.length < 1) {
+            throw new Error('Could not find short url')
+        }
+
         return result.Items[0] as ShortUrlItem
     }
 

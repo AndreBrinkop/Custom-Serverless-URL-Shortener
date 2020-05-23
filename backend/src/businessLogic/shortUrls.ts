@@ -23,7 +23,7 @@ export async function createShortUrl(createShortUrlRequest: CreateShortUrlReques
     logger.info('Create Short Url', {'createShortUrlRequest': createShortUrlRequest, 'callingUrl': callingUrl, 'userId': userId})
 
     const url = createShortUrlRequest.url
-    let bodyString: string
+    let bodyString: string = ''
     try {
         const response = await superagent.get(url).timeout({
             response: 2500,
@@ -51,8 +51,12 @@ export async function createShortUrl(createShortUrlRequest: CreateShortUrlReques
 }
 
 export async function resolveShortUrl(shortUrlId: string): Promise<string> {
-    let shortUrl: ShortUrlItem = await shortUrlAccess.getShortUrl(shortUrlId)
-    return shortUrl ? shortUrl.longUrl : null
+    try {
+        let shortUrl: ShortUrlItem = await shortUrlAccess.getShortUrl(shortUrlId)
+        return shortUrl.longUrl
+    } catch {
+        throw new Error('Can not resolve short url')
+    }
 }
 
 export async function updateShortUrl(shortUrlId: string, updateShortUrlRequest: UpdateShortUrlRequest, userId: string): Promise<void> {
