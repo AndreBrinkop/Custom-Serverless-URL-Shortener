@@ -16,7 +16,7 @@
   "homepage": "https://github.com/AndreBrinkop/Custom-Serverless-URL-Shortener#readme",
   "dependencies": {
     "aws-xray-sdk": "^3.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "base62": "^2.0.1",
     "cheerio": "^1.0.0-rc.3",
     "jsonwebtoken": "^8.5.1",
