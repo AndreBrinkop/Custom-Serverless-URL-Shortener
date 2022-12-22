@@ -19,7 +19,7 @@
     "axios": "^0.21.1",
     "base62": "^2.0.1",
     "cheerio": "^1.0.0-rc.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "serverless-plugin-tracing": "^2.0.0",
     "superagent": "^5.2.2",
     "winston": "^3.2.1"
